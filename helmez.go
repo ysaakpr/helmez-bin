@@ -46,6 +46,12 @@ func main() {
 		},
 
 		cli.StringFlag{
+			Name:  "out, o",
+			Usage: "write the generate yaml to file `values.yaml`",
+			Value: "values.yaml",
+		},
+
+		cli.StringFlag{
 			Name:  "helmez",
 			Usage: "default helmez config file `HELMEZ`",
 			Value: "helmez.yaml",
@@ -64,13 +70,14 @@ func main() {
 func Run(c *cli.Context) error {
 	base := c.String("base")
 	dir := c.String("dir")
+	out := c.String("out")
 	v := prepareValuesFile(base, dir, defaultHelmezConfig)
 	d, err := yaml.Marshal(&v)
 	if err != nil {
-		log.Fatalf("error: %v", err)
+		return err
 	}
-	fmt.Printf("--- t dump:\n%s\n\n", string(d))
-	return nil
+	err = ioutil.WriteFile(out, d, 0644)
+	return err
 }
 
 // HelmezConfig config for helmez
@@ -104,7 +111,6 @@ func prepareValuesFile(base string, dir string, parent HelmezConfig) interface{}
 
 	hConfig := new(HelmezConfig)
 	if err := mergo.Merge(hConfig, parent); err != nil {
-		log.Printf("here")
 		log.Fatal(err)
 	}
 
@@ -113,7 +119,6 @@ func prepareValuesFile(base string, dir string, parent HelmezConfig) interface{}
 	if err == nil {
 		yaml.Unmarshal(helmez, helmezOvr)
 		if err := mergo.Merge(hConfig, helmezOvr, mergo.WithOverride); err != nil {
-			log.Printf("here 1")
 			log.Fatal(err)
 		}
 	}
@@ -123,7 +128,6 @@ func prepareValuesFile(base string, dir string, parent HelmezConfig) interface{}
 	valuesFile := hConfig.ValuesFileName
 	data, err := ioutil.ReadFile(folder + valuesFile)
 	if err != nil {
-		log.Printf("here 2")
 		log.Fatal(err)
 	}
 
