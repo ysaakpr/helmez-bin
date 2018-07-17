@@ -1,8 +1,8 @@
 name: "helmez"
-version: "0.1.2"
+version: "0.1.3"
 usage: "Integrate helmez tools with Helm"
 description: |-
   This plugin provides helmez services to Helm.
 ignoreFlags: false
 useTunnel: false
-command: "sh -c $HELM_PLUGIN_DIR/run.sh"
+command: "/bin/bash $HELM_PLUGIN_DIR/run.sh"
