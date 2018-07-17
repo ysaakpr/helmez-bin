@@ -32,7 +32,7 @@ fmt:
 	@([[ ! -z "$(FORMATTED)" ]] && printf "Fixed unformatted files:\n$(FORMATTED)") || true
 
 clean:
-	rm -rf build release
+	rm -rf build release bin
 
 linux-amd64:
 	CGO_ENABLED=$(CGO_ENABLED) GOOS=linux GOARCH=amd64 $(GO) build -ldflags $(BUILDFLAGS) -o bin/$(NAME).linux.amd64 $(MAIN_GO)
@@ -49,7 +49,10 @@ windows-386:
 
 .PHONY: release clean
 
-release-all: linux-amd64 linux-386 darwin-amd64 darwin-386 windows-amd64 windows-386
+release-all: linux-amd64 linux-386 darwin-amd64 darwin-386
+
+release-plugin: release-all
+	sh  plugin-release.sh
 
 FGT := $(GOPATH)/bin/fgt
 $(FGT):
