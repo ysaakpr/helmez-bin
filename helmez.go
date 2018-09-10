@@ -123,8 +123,6 @@ func prepareValuesFile(base string, dir string, parent HelmezConfig) interface{}
 		}
 	}
 
-	fmt.Printf("%#v\n\n", hConfig)
-
 	valuesFile := hConfig.ValuesFileName
 	data, err := ioutil.ReadFile(folder + valuesFile)
 	if err != nil {
